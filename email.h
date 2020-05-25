@@ -5,15 +5,16 @@ class Email{
 public:
 	Email(char* file_path);
 	string& getFrom();
-	string& getTo();
-	unsigned getMessage_ID();
+	string& getDate();
+	unsigned int getMessage_ID();
 	string& getSubject();
+	string& getTo();
 	string& getContent();
 private:
 	string from;
 	string to;
 	string date;
-	unsigned message_id;
+	unsigned int message_id;
 	string subject;
 	string content;
 };
