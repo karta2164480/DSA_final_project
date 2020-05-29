@@ -1,9 +1,9 @@
 all:
-	g++ DSA_final_project_main.cpp -o DSA_final_project
+	g++ DSA_final_project_main.cpp -o run
 
 run:
-	./DSA_final_project <input >ouput
+	./run <input >ouput
 
 clean:
-	rm -rf DSA_final_project
+	rm -rf run
 	rm -rf ouput
