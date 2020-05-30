@@ -4,23 +4,24 @@
 #include <ctype.h>	//isdigit, isalpha
 #include <regex>	//regex for searching
 
-typedef struct token{
+class Token{
+public:
 	string str;
 	bool isWord;
 	int order;		//bigger -> higher precedence
-} Token;
+};
 
 Node* construcNode(vector<Token>& tokens,int *i){
 	
 	if(tokens[*i].isWord){
-		Node *leaf = (Node *)malloc(sizeof(Node));
+		Node *leaf = new Node();
 		leaf->value = tokens[*i].str;
 		leaf->left = NULL;
 		leaf->right = NULL;
 		return leaf;
 	}
 
-	Node *root = (Node *)malloc(sizeof(Node));
+	Node *root = new Node();
 	root->value = tokens[*i].str;
 	if(root->value == "!"){
 		(*i)++;
@@ -36,15 +37,28 @@ Node* construcNode(vector<Token>& tokens,int *i){
 }
 
 void destroyNode(Node* root){
+
 	if(root->left == NULL && root->right == NULL){
-		free(root);
-	}else if(root->left == NULL){
+		delete root;
+		return;
+	}
+
+	if(root->left == NULL){
+
 		destroyNode(root->right);
+		delete root;
+
 	}else if(root->right == NULL){
+
 		destroyNode(root->left);
+		delete root;
+
 	}else{
+
 		destroyNode(root->right);
 		destroyNode(root->left);
+		delete root;
+
 	}
 }
 
@@ -181,9 +195,9 @@ bool recurEval(Node* root, string& content){
 
 	if(root->value == "&")
 		return (recurEval(root->left, content) && recurEval(root->right, content));
-	else if(root -> value == "|")
+	else if(root->value == "|")
 		return (recurEval(root->left, content) || recurEval(root->right, content));
-	else if(root -> value == "!")
+	else if(root->value == "!")
 		return !(recurEval(root->left, content));
 
 	else{		/*	leaf node	*/

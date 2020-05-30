@@ -4,11 +4,12 @@
 
 using namespace std;
 
-typedef struct node{
+class Node{
+public:
 	string value;
-	node* left;
-	node* right;
-} Node;
+	Node* left;
+	Node* right;
+};
 
 class Parser{
 public:
