@@ -2,6 +2,7 @@
 #include <stack>	
 #include <vector>
 #include <ctype.h>	//isdigit, isalpha
+#include <regex>	//regex for searching
 
 typedef struct token{
 	string str;
@@ -32,6 +33,23 @@ Node* construcNode(vector<Token>& tokens,int *i){
 		root->right = construcNode(tokens, i);
 	}
 	return root;
+}
+
+void destroyNode(Node* root){
+	if(root->left == NULL && root->right == NULL){
+		free(root);
+	}else if(root->left == NULL){
+		destroyNode(root->right);
+	}else if(root->right == NULL){
+		destroyNode(root->left);
+	}else{
+		destroyNode(root->right);
+		destroyNode(root->left);
+	}
+}
+
+Parser::~Parser(){
+	destroyNode(root);	
 }
 
 Parser::Parser(string& expr){
@@ -160,17 +178,28 @@ Parser::Parser(string& expr){
 }
 
 bool recurEval(Node* root, string& content){
+
 	if(root->value == "&")
 		return (recurEval(root->left, content) && recurEval(root->right, content));
 	else if(root -> value == "|")
 		return (recurEval(root->left, content) || recurEval(root->right, content));
 	else if(root -> value == "!")
 		return !(recurEval(root->left, content));
-	else{		//leaf node
+
+	else{		/*	leaf node	*/
+
+		/*		this method is temp, maybe need to be changed	*/
+		regex e("\\b"+root->value+"\\b");
+		smatch m;
+		return regex_search(content, m, e);
+
+		/*		
 		if(content.find(root->value) != string::npos)
 			return true;
 		else
 			return false;
+		*/
+
 	}
 }
 
