@@ -1,7 +1,5 @@
 #include <iostream>
 
-#define KEYWORD_MAX_LENGTH 21
-
 using namespace std;
 
 class Node{
