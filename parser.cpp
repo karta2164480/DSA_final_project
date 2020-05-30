@@ -11,7 +11,7 @@ typedef struct token{
 } Token;
 
 Node* construcNode(vector<Token>& tokens,int *i){
-
+	
 	if(tokens[*i].isWord){
 		Node *leaf = (Node *)malloc(sizeof(Node));
 		leaf->value = tokens[*i].str;
