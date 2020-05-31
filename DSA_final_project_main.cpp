@@ -8,6 +8,7 @@
 #include "parser.h"
 
 #define MAX_FILE_PATH_LEN 1000
+#define MAX_QUREY_LEN 1000
 
 int main()
 {
@@ -15,7 +16,7 @@ int main()
 	string input;
 
 	map<unsigned int, Email> ID_Map;
-	map<string, vector<Email>> Form_Map;
+	map<string, vector<Email>> From_Map;
 	map<string, vector<Email>> To_Map;
 	list<Email> Date_list;
 
@@ -29,8 +30,29 @@ int main()
 			scanf("%s", path);
 			Email temp(path);
 
-			if (ID_Map.find(temp.getMessage_ID()) == ID_Map.end())
+			if (ID_Map.count(temp.getMessage_ID()) == 0) 
 			{
+				if (From_Map.count(temp.getFrom()) == 0) 
+				{
+					vector<Email> From_vector;
+					From_vector.push_back(temp);
+					From_Map.insert(pair<string, vector<Email>>(temp.getFrom(), From_vector));
+				}
+				else 
+				{
+					From_Map[temp.getFrom()].push_back(temp);
+				}
+
+				if (To_Map.count(temp.getTo()) == 0)
+				{
+					vector<Email> To_vector;
+					To_vector.push_back(temp);
+					From_Map.insert(pair<string, vector<Email>>(temp.getTo(), To_vector));
+				}
+				else
+				{
+					To_Map[temp.getTo()].push_back(temp);
+				}
 
 
 				ID_Map.insert(pair<unsigned int, Email>(temp.getMessage_ID(), temp));
@@ -83,6 +105,55 @@ int main()
 		}
 		else if (input.compare("query") == 0)
 		{
+			
+			vector<Email> answer_candidate;
+			
+			char query[MAX_QUREY_LEN] = { 0 };
+			scanf("%s", query);		
+
+			while (query[0] == '-') 
+			{
+				if (query[1] == 'f') 
+				{
+					char temp[MAX_QUREY_LEN] = { 0 };
+					for (int i = 3, j = 0; query[i] != '\"'; i++, j++) 
+					{
+						temp[j] = query[i];
+					}
+					string From_query(temp);
+				}
+				else if (query[1] == 't') 
+				{
+					char temp[MAX_QUREY_LEN] = { 0 };
+					for (int i = 3, j = 0; query[i] != '\"'; i++, j++) 
+					{
+						temp[j] = query[i];
+					}
+					string To_query(temp);
+				}
+				else if (query[1] == 'd') 
+				{
+					char temp1[MAX_QUREY_LEN] = { 0 };
+					char temp2[MAX_QUREY_LEN] = { 0 };
+					int i = 2;
+					for (int j = 0; query[i] != '~'; i++, j++) 
+					{
+						temp1[j] = query[i];
+					}
+					i++;
+					for (int j = 0; query[i] != 0; i++, j++)
+					{
+						temp2[j] = query[i];
+					}
+					string Date_query1(temp1);
+					string Date_query2(temp2);
+				}
+				scanf("%s", query);
+			}
+			
+			string expression(query);
+			Parser parser(expression);
+
 			cout << "-" << "\n";
 		}
 	}
