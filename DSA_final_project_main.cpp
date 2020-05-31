@@ -83,7 +83,7 @@ int main()
 		}
 		else if (input.compare("query") == 0)
 		{
-
+			cout << "-" << "\n";
 		}
 	}
 
