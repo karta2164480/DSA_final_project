@@ -10,6 +10,7 @@ public:
 	string& getSubject();
 	string& getTo();
 	string& getContent();
+	int getLength();
 private:
 	string from;
 	string to;
@@ -17,4 +18,5 @@ private:
 	unsigned int message_id;
 	string subject;
 	string content;
+	int length;
 };
