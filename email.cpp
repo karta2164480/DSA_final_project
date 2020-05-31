@@ -1,36 +1,45 @@
 #include "email.h"
-#include <assert.h>	//assert()
-#include <stdio.h>	//fopen(), FILE
+#include <stdio.h>	//FILE
+#include <string.h>	//strcspn
 
 #define MAX_STRING_LEN 1000
 
 Email::Email(char* file_path){
 
 	FILE* fp = fopen(file_path, "r");
-	assert(fp != NULL);
 
 	char temp[MAX_STRING_LEN];
 
-	fscanf(fp, "From:%s\n", temp);
+	fscanf(fp, "%s ", temp);	
+	fgets(temp, MAX_STRING_LEN, fp);
+	temp[strcspn(temp, "\n")] = 0;
 	string from(temp);
 	this->from = from;
 
-	fscanf(fp, "Date: %[^\n]s", temp);
+	fscanf(fp, "%s ", temp);	
+	fgets(temp, MAX_STRING_LEN, fp);
+	temp[strcspn(temp, "\n")] = 0;
 	string date(temp);
 	this->date = date;
 
 	fscanf(fp, "%s %u\n", temp, &message_id);
 
-	fscanf(fp, "Subject:%s\n", temp);
+	fscanf(fp, "%s ", temp);	
+	fgets(temp, MAX_STRING_LEN, fp);
+	temp[strcspn(temp, "\n")] = 0;
 	string subject(temp);
 	this->subject = temp;
 
-	fscanf(fp, "To:%s\n", temp);
+	fscanf(fp, "%s ", temp);	
+	fgets(temp, MAX_STRING_LEN, fp);
+	temp[strcspn(temp, "\n")] = 0;
 	string to(temp);
 	this->to = to;
 
-	fscanf(fp, "Content: %[^\n]s", temp);
-	string content(temp);
+	string content;
+	fscanf(fp, "%s ", temp);	
+	while(fgets(temp, MAX_STRING_LEN, fp))
+		content += temp;
 	this->content = content;
 
 	fclose(fp);
