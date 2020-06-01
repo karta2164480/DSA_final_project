@@ -78,7 +78,7 @@ void formatContent(string& content, TrieNode *root){
 		}else if(isdigit(content[i])){
 			temp.push_back(content[i]);	
 		}else if(temp.length() > 0){
-			cout << "key: " << temp << endl;
+			//cout << "key: " << temp << endl;	//for debug
 			insert(root, temp);
 			temp.clear();
 		}
@@ -124,10 +124,10 @@ Email::Email(char* file_path){
 	while(fgets(temp, MAX_STRING_LEN, fp))
 		content += temp;
 
+	content += (" " + subject);					//Subject need to be searched,too
+
 	contentTrie = getNode();					//Construct trie
 	formatContent(content, contentTrie);
-
-	insert(contentTrie, subject);				//Subject need to be searched,too
 
 	fclose(fp);
 }
