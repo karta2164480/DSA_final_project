@@ -100,7 +100,35 @@ int main()
 			}
 			else
 			{
-				//wait for removing from From_map ,To_map ,Date_list
+				Email wait_to_remove = ID_Map[id];
+				
+				for (vector<Email>::iterator it = From_Map[wait_to_remove.getFrom()].begin(); it != From_Map[wait_to_remove.getFrom()].end(); it++)
+				{
+					if (it->getMessage_ID() == id) 
+					{
+						From_Map[wait_to_remove.getFrom()].erase(it);
+						break;
+					}
+				}
+
+				for (vector<Email>::iterator it = To_Map[wait_to_remove.getTo()].begin(); it != To_Map[wait_to_remove.getTo()].end(); it++)
+				{
+					if (it->getMessage_ID() == id)
+					{
+						To_Map[wait_to_remove.getTo()].erase(it);
+						break;
+					}
+				}
+
+				for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
+				{
+					if (it->getMessage_ID() == id) 
+					{
+						Date_list.erase(it);
+						break;
+					}
+				}
+
 				ID_Map.erase(id);
 				mail_count--;
 				cout << mail_count << "\n";
@@ -135,10 +163,14 @@ int main()
 			vector<Email> answer_candidate;
 			
 			char query[MAX_QUREY_LEN] = { 0 };
-			scanf("%s", query);		
+			scanf("%s", query);	
+
+			bool from_to_date_flag = 0;
 
 			while (query[0] == '-') 
 			{
+				from_to_date_flag = 1;
+				
 				if (query[1] == 'f')
 				{
 					char temp[MAX_QUREY_LEN] = { 0 };
@@ -199,58 +231,80 @@ int main()
 					{
 						temp2[j] = query[i];
 					}
+
 					string Date_query1(temp1);
 					string Date_query2(temp2);
+
+					if (Date_query1.size() == 0) 
+					{
+						Date_query1 = "0";
+					}
+					if (Date_query2.size() == 0) 
+					{
+						Date_query2 = "x";
+					}
 
 					if (answer_candidate.empty())
 					{
 						Date_list.sort(compare_date);
 
-						if (Date_query1.size() == 0)
+						for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
 						{
-							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+							if (it->getDate() >= Date_query1 && it->getDate() <= Date_query2) 
 							{
-								if (it->getDate() <= Date_query2)
-								{
-
-								}
+								answer_candidate.push_back(*it);
 							}
 						}
-						if (Date_query2.size() == 0)
-						{
-							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
-							{
 
-							}
-						}
-						else
-						{
-							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
-							{
-
-							}
-						}
 					}
 					else 
 					{
-						
+						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
+						{
+							if (it->getDate() < Date_query1 || it->getDate() > Date_query2)
+							{
+								answer_candidate.erase(it);
+							}
+						}
 					}
 				}
 				scanf("%s", query);
 			}
-			
+
 			string expression(query);
 			Parser parser(expression);
 
-			priority_queue<int> answer_ID;
+			priority_queue<int, vector<int>, greater<int>> answer_ID;
 
-			for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++) 
+			if (from_to_date_flag == 1) 
 			{
-				if (parser.evaluate(it->getContent())) 
+				for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
 				{
-					answer_ID.push(it->getMessage_ID());
+					string answer_subject_content = it->getSubject();
+					answer_subject_content.push_back(' ');
+					answer_subject_content += it->getContent();
+
+					if (parser.evaluate(answer_subject_content))
+					{
+						answer_ID.push(it->getMessage_ID());
+					}
 				}
 			}
+			else 
+			{
+				for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++) 
+				{
+					string answer_subject_content = it->second.getSubject();
+					answer_subject_content.push_back(' ');
+					answer_subject_content += it->second.getContent();
+
+					if (parser.evaluate(answer_subject_content))
+					{
+						answer_ID.push(it->second.getMessage_ID());
+					}
+				}
+			}
+			
 
 			if (answer_ID.empty()) 
 			{
@@ -258,9 +312,12 @@ int main()
 			}
 			else 
 			{
-				cout << answer_ID.top() << " ";
-				//check the priority
-				answer_ID.pop();
+				while (!answer_ID.empty())
+				{
+					cout << answer_ID.top() << " ";
+					answer_ID.pop();
+				}
+				cout << "\n";
 			}
 
 

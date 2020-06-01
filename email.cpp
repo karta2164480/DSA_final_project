@@ -68,6 +68,11 @@ void formatDate(char* raw, string& date){
 	date += string(year);
 }
 
+Email::Email() 
+{
+
+}
+
 Email::Email(char* file_path){
 
 	FILE* fp = fopen(file_path, "r");

@@ -3,6 +3,7 @@ using namespace std;
 
 class Email{
 public:
+	Email();
 	Email(char* file_path);
 	string& getFrom();
 	string& getDate();
