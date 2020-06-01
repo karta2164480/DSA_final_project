@@ -11,7 +11,7 @@ void formatDate(char* raw, string& date){
 	char min[3];
 	char month[20];
 	sscanf(raw, " %s %s %s at %s", day, month, year, time);
-	printf("day:%s, month:%s, year:%s, time:%s\n", day, month, year, time);
+	//printf("day:%s, month:%s, year:%s, time:%s\n", day, month, year, time);
 	if(strlen(day) == 1){
 		day[2] = '\0';
 		day[1] = day[0];
