@@ -19,7 +19,7 @@ int main(){
 	string expr;
 	while(cin >> expr){
 		Parser parser(expr);
-		cout << "Result: " << parser.evaluate(test) << endl;
+		cout << "Result: " << parser.evaluate(test.getContent()) << endl;
 	}
 
 }
