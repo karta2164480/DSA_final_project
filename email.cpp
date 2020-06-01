@@ -78,7 +78,7 @@ void formatContent(string& content, TrieNode *root){
 		}else if(isdigit(content[i])){
 			temp.push_back(content[i]);	
 		}else if(temp.length() > 0){
-			//cout << "key: " << temp << endl;	//for debug
+			//cout << "key: " << temp << endl;		//for debug
 			insert(root, temp);
 			temp.clear();
 		}
@@ -105,7 +105,7 @@ Email::Email(char* file_path){
 	formatDate(temp, date);
 	this->date = date;
 
-	fscanf(fp, "%s %u\n", temp, &message_id);	//Message-ID:
+	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID:
 
 	fscanf(fp, "%s ", temp);					//Subject:	
 	fgets(temp, MAX_STRING_LEN, fp);
