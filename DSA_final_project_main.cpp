@@ -186,7 +186,7 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++) 
+						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++) 
 						{
 							if (it->getFrom() != From_query) 
 							{
@@ -214,7 +214,7 @@ int main()
 					}
 					else
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
+						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
 						{
 							if (it->getTo() != To_query)
 							{
@@ -269,7 +269,7 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
+						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
 						{
 							if (it->getDate() < Date_query1 || it->getDate() > Date_query2)
 							{
