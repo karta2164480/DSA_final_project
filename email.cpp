@@ -1,6 +1,7 @@
 #include "email.h"
 #include <stdio.h>	//FILE
 #include <string.h>	//strcspn, sscanf
+#include <ctype.h>	//isalpha, isdigit, tolower
 
 #define MAX_STRING_LEN 1000
 
@@ -68,6 +69,23 @@ void formatDate(char* raw, string& date){
 	date += string(year);
 }
 
+void formatContent(string& content, TrieNode *root){
+
+	string temp;
+	for(int i = 0; i < content.size(); i++){
+		if(isalpha(content[i])){
+			temp.push_back(tolower(content[i]));
+		}else if(isdigit(content[i])){
+			temp.push_back(content[i]);	
+		}else if(temp.length() > 0){
+			cout << "key: " << temp << endl;
+			insert(root, temp);
+			temp.clear();
+		}
+	}
+
+}
+
 Email::Email(char* file_path){
 
 	FILE* fp = fopen(file_path, "r");
@@ -105,9 +123,17 @@ Email::Email(char* file_path){
 	fscanf(fp, "%s ", temp);					//Content:	
 	while(fgets(temp, MAX_STRING_LEN, fp))
 		content += temp;
-	this->content = content;
+
+	contentTrie = getNode();					//Construct trie
+	formatContent(content, contentTrie);
+
+	insert(contentTrie, subject);				//Subject need to be searched,too
 
 	fclose(fp);
+}
+
+Email::~Email(){
+	release(contentTrie);
 }
 
 string& Email::getFrom(){
@@ -130,6 +156,6 @@ string& Email::getSubject(){
 	return subject;
 }
 
-string& Email::getContent(){
-	return content;
+TrieNode* Email::getContent(){
+	return contentTrie;
 }

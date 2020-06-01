@@ -1,4 +1,5 @@
-#include <iostream>
+#include <string>
+#include "email.h"
 
 using namespace std;
 
@@ -13,7 +14,7 @@ class Parser{
 public:
 	Parser(string& expression);
 	~Parser();
-	bool evaluate(string& content);
+	bool evaluate(Email& email);
 private:
 	Node *root;
 };
