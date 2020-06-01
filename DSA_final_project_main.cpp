@@ -165,11 +165,12 @@ int main()
 			char query[MAX_QUREY_LEN] = { 0 };
 			scanf("%s", query);	
 
-			bool from_to_date_flag = 0;
+			bool From_To_Date_flag = 0;
+			bool fail_flag = 0;
 
 			while (query[0] == '-') 
 			{
-				from_to_date_flag = 1;
+				From_To_Date_flag = 1;
 				
 				if (query[1] == 'f')
 				{
@@ -193,6 +194,11 @@ int main()
 							}
 						}
 					}
+					if (answer_candidate.size() == 0) 
+					{
+						fail_flag = 1;
+						break;
+					}
 				}
 				else if (query[1] == 't') 
 				{
@@ -215,6 +221,11 @@ int main()
 								answer_candidate.erase(it);
 							}
 						}
+					}
+					if (answer_candidate.size() == 0)
+					{
+						fail_flag = 1;
+						break;
 					}
 				}
 				else if (query[1] == 'd') 
@@ -255,7 +266,6 @@ int main()
 								answer_candidate.push_back(*it);
 							}
 						}
-
 					}
 					else 
 					{
@@ -267,57 +277,69 @@ int main()
 							}
 						}
 					}
+					if (answer_candidate.size() == 0)
+					{
+						fail_flag = 1;
+						break;
+					}
 				}
 				scanf("%s", query);
 			}
 
-			string expression(query);
-			Parser parser(expression);
-
-			priority_queue<int, vector<int>, greater<int>> answer_ID;
-
-			if (from_to_date_flag == 1) 
+			if (fail_flag == 0) 
 			{
-				for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
-				{
-					string answer_subject_content = it->getSubject();
-					answer_subject_content.push_back(' ');
-					answer_subject_content += it->getContent();
+				string expression(query);
+				Parser parser(expression);
 
-					if (parser.evaluate(answer_subject_content))
+				priority_queue<int, vector<int>, greater<int>> answer_ID;
+
+				if (From_To_Date_flag == 1)
+				{
+					for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
 					{
-						answer_ID.push(it->getMessage_ID());
+						string answer_subject_content = it->getSubject();
+						answer_subject_content.push_back(' ');
+						answer_subject_content += it->getContent();
+
+						if (parser.evaluate(answer_subject_content))
+						{
+							answer_ID.push(it->getMessage_ID());
+						}
 					}
+				}
+				else
+				{
+					for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
+					{
+						string answer_subject_content = it->second.getSubject();
+						answer_subject_content.push_back(' ');
+						answer_subject_content += it->second.getContent();
+
+						if (parser.evaluate(answer_subject_content))
+						{
+							answer_ID.push(it->second.getMessage_ID());
+						}
+					}
+				}
+
+
+				if (answer_ID.empty())
+				{
+					cout << "-" << "\n";
+				}
+				else
+				{
+					while (!answer_ID.empty())
+					{
+						cout << answer_ID.top() << " ";
+						answer_ID.pop();
+					}
+					cout << "\n";
 				}
 			}
 			else 
-			{
-				for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++) 
-				{
-					string answer_subject_content = it->second.getSubject();
-					answer_subject_content.push_back(' ');
-					answer_subject_content += it->second.getContent();
-
-					if (parser.evaluate(answer_subject_content))
-					{
-						answer_ID.push(it->second.getMessage_ID());
-					}
-				}
-			}
-			
-
-			if (answer_ID.empty()) 
 			{
 				cout << "-" << "\n";
-			}
-			else 
-			{
-				while (!answer_ID.empty())
-				{
-					cout << answer_ID.top() << " ";
-					answer_ID.pop();
-				}
-				cout << "\n";
 			}
 
 
