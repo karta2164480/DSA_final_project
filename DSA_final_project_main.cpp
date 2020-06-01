@@ -10,6 +10,30 @@
 #define MAX_FILE_PATH_LEN 1000
 #define MAX_QUREY_LEN 1000
 
+bool compare_date(Email email1, Email email2) 
+{
+	if (email1.getDate() < email2.getDate()) 
+	{
+		return 1;
+
+	}
+	else if (email1.getDate() > email2.getDate()) 
+	{
+		return 0;
+	}
+	else 
+	{
+		if (email1.getMessage_ID() < email2.getMessage_ID())
+		{
+			return 1;
+		}
+		else 
+		{
+			return 0;
+		} 
+	}
+}
+
 int main()
 {
 
@@ -53,9 +77,10 @@ int main()
 				{
 					To_Map[temp.getTo()].push_back(temp);
 				}
-				//wait for adding into Date_list
-
+				
+				Date_list.push_back(temp);
 				ID_Map.insert(pair<unsigned int, Email>(temp.getMessage_ID(), temp));
+
 				mail_count++;
 				cout << mail_count << "\n";
 			}
@@ -176,7 +201,40 @@ int main()
 					}
 					string Date_query1(temp1);
 					string Date_query2(temp2);
-					//wait for Email class change
+
+					if (answer_candidate.empty())
+					{
+						Date_list.sort(compare_date);
+
+						if (Date_query1.size() == 0)
+						{
+							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+							{
+								if (it->getDate() <= Date_query2)
+								{
+
+								}
+							}
+						}
+						if (Date_query2.size() == 0)
+						{
+							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+							{
+
+							}
+						}
+						else
+						{
+							for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+							{
+
+							}
+						}
+					}
+					else 
+					{
+						
+					}
 				}
 				scanf("%s", query);
 			}
@@ -210,5 +268,5 @@ int main()
 	}
 
 
-	//Upper and lower characters change
+	//Upper and lower characters change (case-insensitive)
 }
