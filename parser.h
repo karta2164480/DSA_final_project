@@ -14,7 +14,7 @@ class Parser{
 public:
 	Parser(string& expression);
 	~Parser();
-	bool evaluate(Email& email);
+	bool evaluate(TrieNode* content);
 private:
 	Node *root;
 };
