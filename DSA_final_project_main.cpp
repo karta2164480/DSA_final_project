@@ -53,7 +53,7 @@ int main()
 				{
 					To_Map[temp.getTo()].push_back(temp);
 				}
-
+				//wait for adding into Date_list
 
 				ID_Map.insert(pair<unsigned int, Email>(temp.getMessage_ID(), temp));
 				mail_count++;
@@ -75,7 +75,7 @@ int main()
 			}
 			else
 			{
-
+				//wait for removing from From_map ,To_map ,Date_list
 				ID_Map.erase(id);
 				mail_count--;
 				cout << mail_count << "\n";
@@ -102,6 +102,7 @@ int main()
 			{
 				cout << max_id << " " << max_length << "\n";
 			}
+			//wait for better data structure improvement
 		}
 		else if (input.compare("query") == 0)
 		{
@@ -113,14 +114,28 @@ int main()
 
 			while (query[0] == '-') 
 			{
-				if (query[1] == 'f') 
+				if (query[1] == 'f')
 				{
 					char temp[MAX_QUREY_LEN] = { 0 };
-					for (int i = 3, j = 0; query[i] != '\"'; i++, j++) 
+					for (int i = 3, j = 0; query[i] != '\"'; i++, j++)
 					{
 						temp[j] = query[i];
 					}
 					string From_query(temp);
+					if (answer_candidate.empty()) 
+					{
+						answer_candidate = (From_Map[From_query]);
+					}
+					else 
+					{
+						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++) 
+						{
+							if (it->getFrom() != From_query) 
+							{
+								answer_candidate.erase(it);
+							}
+						}
+					}
 				}
 				else if (query[1] == 't') 
 				{
@@ -130,6 +145,20 @@ int main()
 						temp[j] = query[i];
 					}
 					string To_query(temp);
+					if (answer_candidate.empty())
+					{
+						answer_candidate = (To_Map[To_query]);
+					}
+					else
+					{
+						for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
+						{
+							if (it->getTo() != To_query)
+							{
+								answer_candidate.erase(it);
+							}
+						}
+					}
 				}
 				else if (query[1] == 'd') 
 				{
@@ -147,6 +176,7 @@ int main()
 					}
 					string Date_query1(temp1);
 					string Date_query2(temp2);
+					//wait for Email class change
 				}
 				scanf("%s", query);
 			}
@@ -154,10 +184,31 @@ int main()
 			string expression(query);
 			Parser parser(expression);
 
-			cout << "-" << "\n";
+			priority_queue<int> answer_ID;
+
+			for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++) 
+			{
+				if (parser.evaluate(it->getContent())) 
+				{
+					answer_ID.push(it->getMessage_ID());
+				}
+			}
+
+			if (answer_ID.empty()) 
+			{
+				cout << "-" << "\n";
+			}
+			else 
+			{
+				cout << answer_ID.top() << " ";
+				//check the priority
+				answer_ID.pop();
+			}
+
+
 		}
 	}
 
 
-
+	//Upper and lower characters change
 }
