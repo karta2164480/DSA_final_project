@@ -2,7 +2,6 @@
 #include <stack>	
 #include <vector>
 #include <ctype.h>	//isdigit, isalpha
-#include <regex>	//regex for searching
 
 class Token{
 public:
@@ -191,7 +190,7 @@ Parser::Parser(string& expr){
 
 }
 
-bool recurEval(Node* root, string& content){
+bool recurEval(Node* root, TrieNode* content){
 
 	if(root->value == "&")
 		return (recurEval(root->left, content) && recurEval(root->right, content));
@@ -200,24 +199,21 @@ bool recurEval(Node* root, string& content){
 	else if(root->value == "!")
 		return !(recurEval(root->left, content));
 
-	else{		/*	leaf node	*/
+	/*	leaf node	*/
+	else{		
 
-		/*		this method is temp, maybe need to be changed	*/
+		/*		old method
 		regex e("\\b"+root->value+"\\b");
 		smatch m;
 		return regex_search(content, m, e);
-
-		/*		
-		if(content.find(root->value) != string::npos)
-			return true;
-		else
-			return false;
 		*/
-
+		
+		return search(content, root->value);
+		
 	}
 }
 
-bool Parser::evaluate(string& content){
+bool Parser::evaluate(TrieNode* content){
 	return recurEval(root, content);
 }
 
