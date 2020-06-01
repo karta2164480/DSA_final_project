@@ -213,7 +213,7 @@ bool recurEval(Node* root, TrieNode* content){
 	}
 }
 
-bool Parser::evaluate(Email& mail){
-	return recurEval(root, mail.getContent());
+bool Parser::evaluate(TrieNode* content){
+	return recurEval(root, content);
 }
 
