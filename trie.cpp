@@ -16,7 +16,7 @@ TrieNode *getNode(){
 	return node;
 }
 
-void insert(TrieNode *root, string& key){
+void trie_insert(TrieNode *root, string& key){
 
 	TrieNode *crawler = root;
 
@@ -37,7 +37,7 @@ void insert(TrieNode *root, string& key){
 	crawler->isEndOfWord = true;
 }
 
-bool search(TrieNode *root, string& key){
+bool trie_search(TrieNode *root, string& key){
 
 	TrieNode *crawler = root;
 
@@ -59,10 +59,10 @@ bool search(TrieNode *root, string& key){
 	return crawler->isEndOfWord;
 }
 
-void release(TrieNode *root){
+void trie_release(TrieNode *root){
 	for(int i = 0; i < CHARACTER_NUM; i++){
 		if(root->children[i] != NULL)
-			release(root->children[i]);
+			trie_release(root->children[i]);
 	}
 	delete root;
 }

@@ -79,7 +79,7 @@ void formatContent(string& content, TrieNode *root){
 			temp.push_back(content[i]);	
 		}else if(temp.length() > 0){
 			//cout << "key: " << temp << endl;		//for debug
-			insert(root, temp);
+			trie_insert(root, temp);
 			temp.clear();
 		}
 	}
@@ -133,7 +133,7 @@ Email::Email(char* file_path){
 }
 
 Email::~Email(){
-	release(contentTrie);
+	trie_release(contentTrie);
 }
 
 string& Email::getFrom(){

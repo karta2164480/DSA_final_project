@@ -209,7 +209,7 @@ bool recurEval(Node* root, TrieNode* content){
 		return regex_search(content, m, e);
 		*/
 		
-		return search(content, root->value);
+		return trie_search(content, root->value);
 		
 	}
 }
