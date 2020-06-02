@@ -71,7 +71,7 @@ void formatDate(char* raw, string& date){
 
 Email::Email() 
 {
-
+	this->contentTrie = getNode();
 }
 
 void formatContent(string& content, TrieNode *root){

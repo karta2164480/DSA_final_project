@@ -6,23 +6,25 @@
 #include <string>
 #include "parser.h"
 
+using namespace std;
+
 #define MAX_FILE_PATH_LEN 1000
 #define MAX_QUREY_LEN 1000
 
-bool compare_date(Email email1, Email email2) 
+bool compare_date(Email* email1, Email* email2) 
 {
-	if (email1.getDate() < email2.getDate()) 
+	if (email1->getDate() < email2->getDate())
 	{
 		return 1;
 
 	}
-	else if (email1.getDate() > email2.getDate()) 
+	else if (email1->getDate() > email2->getDate())
 	{
 		return 0;
 	}
 	else 
 	{
-		if (email1.getMessage_ID() < email2.getMessage_ID())
+		if (email1->getMessage_ID() < email2->getMessage_ID())
 		{
 			return 1;
 		}
@@ -38,10 +40,10 @@ int main()
 
 	string input;
 
-	map<unsigned int, Email> ID_Map;
-	map<string, vector<Email>> From_Map;
-	map<string, vector<Email>> To_Map;
-	list<Email> Date_list;
+	map<unsigned int, Email*> ID_Map;
+	map<string, vector<Email*>> From_Map;
+	map<string, vector<Email*>> To_Map;
+	list<Email*> Date_list;
 
 	int mail_count = 0;
 
@@ -51,34 +53,36 @@ int main()
 		{
 			char path[MAX_FILE_PATH_LEN];
 			scanf("%s", path);
-			Email temp(path);
+			Email *temp;
+			temp = new Email(path);
 
-			if (ID_Map.count(temp.getMessage_ID()) == 0) 
+			if (ID_Map.count(temp->getMessage_ID()) == 0) 
 			{
-				if (From_Map.count(temp.getFrom()) == 0) 
+				if (From_Map.count(temp->getFrom()) == 0)
 				{
-					vector<Email> From_vector;
+					vector<Email*> From_vector;
 					From_vector.push_back(temp);
-					From_Map.insert(pair<string, vector<Email>>(temp.getFrom(), From_vector));
+					From_Map[temp->getFrom()] = From_vector;
+					//From_Map.insert(pair<string, vector<Email>>(temp.getFrom(), From_vector));
 				}
 				else 
 				{
-					From_Map[temp.getFrom()].push_back(temp);
+					From_Map[temp->getFrom()].push_back(temp);
 				}
 
-				if (To_Map.count(temp.getTo()) == 0)
+				if (To_Map.count(temp->getTo()) == 0)
 				{
-					vector<Email> To_vector;
+					vector<Email*> To_vector;
 					To_vector.push_back(temp);
-					From_Map.insert(pair<string, vector<Email>>(temp.getTo(), To_vector));
+					From_Map.insert(pair<string, vector<Email*>>(temp->getTo(), To_vector));
 				}
 				else
 				{
-					To_Map[temp.getTo()].push_back(temp);
+					To_Map[temp->getTo()].push_back(temp);
 				}
 				
 				Date_list.push_back(temp);
-				ID_Map.insert(pair<unsigned int, Email>(temp.getMessage_ID(), temp));
+				ID_Map.insert(pair<unsigned int, Email*>(temp->getMessage_ID(), temp));
 
 				mail_count++;
 				cout << mail_count << "\n";
@@ -99,29 +103,29 @@ int main()
 			}
 			else
 			{
-				Email wait_to_remove = ID_Map[id];
+				Email* wait_to_remove = ID_Map[id];
 				
-				for (vector<Email>::iterator it = From_Map[wait_to_remove.getFrom()].begin(); it != From_Map[wait_to_remove.getFrom()].end(); it++)
+				for (vector<Email*>::iterator it = From_Map[wait_to_remove->getFrom()].begin(); it != From_Map[wait_to_remove->getFrom()].end(); it++)
 				{
-					if (it->getMessage_ID() == id) 
+					if ((*it)->getMessage_ID() == id) 
 					{
-						From_Map[wait_to_remove.getFrom()].erase(it);
+						From_Map[wait_to_remove->getFrom()].erase(it);
 						break;
 					}
 				}
 
-				for (vector<Email>::iterator it = To_Map[wait_to_remove.getTo()].begin(); it != To_Map[wait_to_remove.getTo()].end(); it++)
+				for (vector<Email*>::iterator it = To_Map[wait_to_remove->getTo()].begin(); it != To_Map[wait_to_remove->getTo()].end(); it++)
 				{
-					if (it->getMessage_ID() == id)
+					if ((*it)->getMessage_ID() == id)
 					{
-						To_Map[wait_to_remove.getTo()].erase(it);
+						To_Map[wait_to_remove->getTo()].erase(it);
 						break;
 					}
 				}
 
-				for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
+				for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
 				{
-					if (it->getMessage_ID() == id) 
+					if ((*it)->getMessage_ID() == id)
 					{
 						Date_list.erase(it);
 						break;
@@ -129,6 +133,7 @@ int main()
 				}
 
 				ID_Map.erase(id);
+				delete wait_to_remove;
 				mail_count--;
 				cout << mail_count << "\n";
 			}
@@ -137,13 +142,13 @@ int main()
 		{
 			int max_length = 0;
 			int max_id = -1;
-			for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
+			for (map<unsigned int, Email*>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
 			{
-				int now_length = (it->second.getLength());
+				int now_length = ((*(it->second)).getLength());
 				if (now_length > max_length)
 				{
 					max_length = now_length;
-					max_id = it->second.getMessage_ID();
+					max_id = (*(it->second)).getMessage_ID();
 				}
 			}
 			if (max_id == -1)
@@ -159,7 +164,7 @@ int main()
 		else if (input.compare("query") == 0)
 		{
 			
-			vector<Email> answer_candidate;
+			vector<Email*> answer_candidate;
 			
 			char query[MAX_QUREY_LEN] = { 0 };
 			scanf("%s", query);	
@@ -185,9 +190,9 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++) 
+						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++) 
 						{
-							if (it->getFrom() != From_query) 
+							if ((*it)->getFrom() != From_query) 
 							{
 								answer_candidate.erase(it);
 							}
@@ -213,9 +218,9 @@ int main()
 					}
 					else
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
+						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
 						{
-							if (it->getTo() != To_query)
+							if ((*it)->getTo() != To_query)
 							{
 								answer_candidate.erase(it);
 							}
@@ -258,9 +263,9 @@ int main()
 					{
 						Date_list.sort(compare_date);
 
-						for (list<Email>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+						for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
 						{
-							if (it->getDate() >= Date_query1 && it->getDate() <= Date_query2) 
+							if ((*it)->getDate() >= Date_query1 && (*it)->getDate() <= Date_query2)
 							{
 								answer_candidate.push_back(*it);
 							}
@@ -268,9 +273,9 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
+						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
 						{
-							if (it->getDate() < Date_query1 || it->getDate() > Date_query2)
+							if ((*it)->getDate() < Date_query1 || (*it)->getDate() > Date_query2)
 							{
 								answer_candidate.erase(it);
 							}
@@ -298,21 +303,21 @@ int main()
 
 				if (From_To_Date_flag == 1)
 				{
-					for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
+					for (vector<Email*>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
 					{
-						if (parser.evaluate(it->getContent())) 
+						if (parser.evaluate((*it)->getContent()))
 						{
-							answer_ID.push(it->getMessage_ID());
+							answer_ID.push((*it)->getMessage_ID());
 						}
 					}
 				}
 				else
 				{
-					for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
+					for (map<unsigned int, Email*>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
 					{
-						if (parser.evaluate(it->second.getContent())) 
+						if (parser.evaluate((*(it->second)).getContent()))
 						{
-							answer_ID.push(it->second.getMessage_ID());
+							answer_ID.push((*(it->second)).getMessage_ID());
 						}
 					}
 				}
