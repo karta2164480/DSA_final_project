@@ -159,6 +159,10 @@ string& Email::getSubject(){
 	return subject;
 }
 
+int Email::getLength(){
+	return length;
+}
+
 TrieNode* Email::getContent(){
 	return contentTrie;
 }
