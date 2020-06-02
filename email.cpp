@@ -1,6 +1,7 @@
 #include "email.h"
 #include <stdio.h>	//FILE
 #include <string.h>	//strcspn, sscanf
+#include <ctype.h>	//isalpha, isdigit, tolower
 
 #define MAX_STRING_LEN 1000
 
@@ -73,6 +74,23 @@ Email::Email()
 
 }
 
+void formatContent(string& content, TrieNode *root){
+
+	string temp;
+	for(int i = 0; i < content.size(); i++){
+		if(isalpha(content[i])){
+			temp.push_back(tolower(content[i]));
+		}else if(isdigit(content[i])){
+			temp.push_back(content[i]);	
+		}else if(temp.length() > 0){
+			//cout << "key: " << temp << endl;		//for debug
+			insert(root, temp);
+			temp.clear();
+		}
+	}
+
+}
+
 Email::Email(char* file_path){
 
 	FILE* fp = fopen(file_path, "r");
@@ -92,7 +110,7 @@ Email::Email(char* file_path){
 	formatDate(temp, date);
 	this->date = date;
 
-	fscanf(fp, "%s %u\n", temp, &message_id);	//Message-ID:
+	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID:
 
 	fscanf(fp, "%s ", temp);					//Subject:	
 	fgets(temp, MAX_STRING_LEN, fp);
@@ -110,8 +128,8 @@ Email::Email(char* file_path){
 	fscanf(fp, "%s ", temp);					//Content:	
 	while(fgets(temp, MAX_STRING_LEN, fp))
 		content += temp;
-	this->content = content;
 
+	
 	int length = 0;
 	for (string::iterator it = content.begin(); it != content.end(); it++) 
 	{
@@ -121,11 +139,23 @@ Email::Email(char* file_path){
 		}
 	}
 	this->length = length;
+	
+	
+	content += (" " + subject);					//Subject need to be searched,too
+
+	contentTrie = getNode();					//Construct trie
+	formatContent(content, contentTrie);
+
+
 
 	fclose(fp);
 }
 
-string& Email::getFrom() {
+Email::~Email(){
+	release(contentTrie);
+}
+
+string& Email::getFrom(){
 	return from;
 }
 
@@ -145,8 +175,8 @@ string& Email::getSubject() {
 	return subject;
 }
 
-string& Email::getContent() {
-	return content;
+TrieNode* Email::getContent(){
+	return contentTrie;
 }
 
 int Email::getLength() 
