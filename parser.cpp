@@ -1,7 +1,8 @@
 #include "parser.h"
 #include <stack>	
 #include <vector>
-#include <ctype.h>	//isdigit, isalpha
+#include <ctype.h>		//isdigit, isalpha
+#include <algorithm>	//reverse
 
 class Token{
 public:
