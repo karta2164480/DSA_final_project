@@ -4,7 +4,6 @@
 #include <vector>
 #include <queue>
 #include <string>
-#include "email.h"
 #include "parser.h"
 
 #define MAX_FILE_PATH_LEN 1000
@@ -288,6 +287,10 @@ int main()
 
 			if (fail_flag == 0) 
 			{
+				for (int i = 0; query[i] != 0; i++) 
+				{
+					query[i] = tolower(query[i]);
+				}
 				string expression(query);
 				Parser parser(expression);
 
@@ -297,11 +300,7 @@ int main()
 				{
 					for (vector<Email>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
 					{
-						string answer_subject_content = it->getSubject();
-						answer_subject_content.push_back(' ');
-						answer_subject_content += it->getContent();
-
-						if (parser.evaluate(answer_subject_content))
+						if (parser.evaluate(it->getContent())) 
 						{
 							answer_ID.push(it->getMessage_ID());
 						}
@@ -311,11 +310,7 @@ int main()
 				{
 					for (map<unsigned int, Email>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
 					{
-						string answer_subject_content = it->second.getSubject();
-						answer_subject_content.push_back(' ');
-						answer_subject_content += it->second.getContent();
-
-						if (parser.evaluate(answer_subject_content))
+						if (parser.evaluate(it->second.getContent())) 
 						{
 							answer_ID.push(it->second.getMessage_ID());
 						}
@@ -345,7 +340,4 @@ int main()
 
 		}
 	}
-
-
-	//Upper and lower characters change (case-insensitive)
 }
