@@ -1,7 +1,7 @@
 /*	this data structure is for content query  */
 
 #include "trie.h"
-#include <stdlib.h>	//memset
+#include <memory.h>	//memset
 #include <ctype.h>	//isalpha
 #include <assert.h>	//assert
 
