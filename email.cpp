@@ -69,15 +69,17 @@ void formatDate(char* raw, string& date){
 	date += string(year);
 }
 
-void formatContent(string& content, TrieNode *root){
+void formatContent(string& content, TrieNode *root, int *length){
 
 	string temp;
 	for(int i = 0; i < content.size(); i++){
 		if(isalpha(content[i])){
 			temp.push_back(tolower(content[i]));
+			(*length)++;
 		}else if(isdigit(content[i])){
 			temp.push_back(content[i]);	
-		}else if(temp.length() > 0){
+			(*length)++;
+		}else{
 			//cout << "key: " << temp << endl;		//for debug
 			trie_insert(root, temp);
 			temp.clear();
@@ -127,7 +129,8 @@ Email::Email(char* file_path){
 	content += (" " + subject);					//Subject need to be searched,too
 
 	contentTrie = getNode();					//Construct trie
-	formatContent(content, contentTrie);
+	length = 0;
+	formatContent(content, contentTrie, &length);
 
 	fclose(fp);
 }
