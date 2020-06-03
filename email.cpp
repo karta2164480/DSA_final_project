@@ -169,8 +169,3 @@ int Email::getLength(){
 TrieNode* Email::getContent(){
 	return contentTrie;
 }
-
-int Email::getLength() 
-{
-	return length;
-}
