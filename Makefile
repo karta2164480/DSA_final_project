@@ -1,5 +1,5 @@
 all:
-	g++ DSA_final_project_main.cpp email.cpp parser.cpp -o run
+	g++ DSA_final_project_main.cpp email.cpp parser.cpp trie.cpp -o run
 
 run:
 	./run <input >ouput

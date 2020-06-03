@@ -133,6 +133,8 @@ Email::Email(char* file_path){
 	int subject_len;							//Subject need to be searched,too
 	formatContent(subject, contentTrie, &subject_len);
 
+
+
 	fclose(fp);
 }
 
@@ -144,19 +146,19 @@ string& Email::getFrom(){
 	return from;
 }
 
-string& Email::getDate(){
+string& Email::getDate() {
 	return date;
 }
 
-string& Email::getTo(){
+string& Email::getTo() {
 	return to;
 }
 
-unsigned int Email::getMessage_ID(){
+unsigned int Email::getMessage_ID() {
 	return message_id;
 }
 
-string& Email::getSubject(){
+string& Email::getSubject() {
 	return subject;
 }
 
@@ -166,4 +168,9 @@ int Email::getLength(){
 
 TrieNode* Email::getContent(){
 	return contentTrie;
+}
+
+int Email::getLength() 
+{
+	return length;
 }
