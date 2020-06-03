@@ -13,6 +13,7 @@ int main(){
 	cout << "Message-ID: " << test->getMessage_ID() << endl;
 	cout << "Subject: " << test->getSubject() << endl;
 	cout << "To: " << test->getTo() << endl;
+	cout << "Length: " << test->getLength() << endl;
 	printf("---------------------------------------------------------\n");
 
 	cout << "Enter query:" << endl;
@@ -22,5 +23,4 @@ int main(){
 		cout << "Result: " << parser.evaluate(test->getContent()) << endl;
 	}
 	delete test;
-	printf("hi\n");
 }

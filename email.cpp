@@ -80,7 +80,6 @@ void formatContent(string& content, TrieNode *root, int *length){
 			temp.push_back(content[i]);	
 			(*length)++;
 		}else{
-			//cout << "key: " << temp << endl;		//for debug
 			trie_insert(root, temp);
 			temp.clear();
 		}
@@ -126,11 +125,13 @@ Email::Email(char* file_path){
 	while(fgets(temp, MAX_STRING_LEN, fp))
 		content += temp;
 
-	content += (" " + subject);					//Subject need to be searched,too
 
 	contentTrie = getNode();					//Construct trie
 	length = 0;
 	formatContent(content, contentTrie, &length);
+
+	int subject_len;							//Subject need to be searched,too
+	formatContent(subject, contentTrie, &subject_len);
 
 	fclose(fp);
 }
