@@ -190,11 +190,16 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++) 
+						vector<Email*>::iterator it = answer_candidate.begin();
+						while (it < answer_candidate.end()) 
 						{
-							if ((*it)->getFrom() != From_query) 
+							if ((*it)->getFrom() != From_query)
 							{
-								answer_candidate.erase(it);
+								it = answer_candidate.erase(it);
+							}
+							else
+							{
+								it++;
 							}
 						}
 					}
@@ -218,11 +223,16 @@ int main()
 					}
 					else
 					{
-						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
+						vector<Email*>::iterator it = answer_candidate.begin();
+						while (it < answer_candidate.end())
 						{
-							if ((*it)->getTo() != To_query)
+							if ((*it)->getTo() != To_query) 
 							{
-								answer_candidate.erase(it);
+								it = answer_candidate.erase(it);
+							}
+							else
+							{
+								it++;
 							}
 						}
 					}
@@ -273,11 +283,16 @@ int main()
 					}
 					else 
 					{
-						for (vector<Email*>::iterator it = answer_candidate.begin(); it < answer_candidate.end(); it++)
+						vector<Email*>::iterator it = answer_candidate.begin();
+						while (it < answer_candidate.end())
 						{
 							if ((*it)->getDate() < Date_query1 || (*it)->getDate() > Date_query2)
 							{
-								answer_candidate.erase(it);
+								it = answer_candidate.erase(it);
+							}
+							else
+							{
+								it++;
 							}
 						}
 					}
@@ -288,6 +303,15 @@ int main()
 					}
 				}
 				scanf("%s", query);
+			}
+			if (fail_flag == 1) 
+			{
+				scanf("%s", query);
+				while (query[0] == '-') 
+				{
+					scanf("%s", query);
+				}
+				//mean to avoid the expression is "add,remove,longest,query"
 			}
 
 			if (fail_flag == 0) 
