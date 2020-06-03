@@ -273,7 +273,7 @@ int main()
 					{
 						Date_list.sort(compare_date);
 
-						for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); i++)
+						for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++)
 						{
 							if ((*it)->getDate() >= Date_query1 && (*it)->getDate() <= Date_query2)
 							{
