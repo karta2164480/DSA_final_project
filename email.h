@@ -6,7 +6,6 @@ using namespace std;
 
 class Email{
 public:
-	Email();
 	Email(char* file_path);
 	~Email();
 	string& getFrom();
