@@ -1,11 +1,12 @@
 #include "email.h"
 #include <stdio.h>	//FILE
-#include <string.h>	//strcspn, sscanf
+#include <string.h>	//strcspn, sscanf, strcat
+#include <stdlib.h>	//strtoll
 #include <ctype.h>	//isalpha, isdigit, tolower
 
 #define MAX_STRING_LEN 1000
 
-void formatDate(char* raw, string& date){
+void formatDate(char* raw, long long* date){
 	char day[3];
 	char year[50];
 	char time[6];
@@ -66,7 +67,9 @@ void formatDate(char* raw, string& date){
 	strcat(year, month);
 	strcat(year, day);
 	strcat(year, time);
-	date += string(year);
+
+	char *eptr;
+	*date = strtoll(year, &eptr, 10);
 }
 
 void formatContent(string& content, TrieNode *root, int *length){
@@ -96,29 +99,28 @@ Email::Email(char* file_path){
 	fscanf(fp, "%s ", temp);					//From:
 	fgets(temp, MAX_STRING_LEN, fp);
 	temp[strcspn(temp, "\n")] = 0;
-	string from(temp);
-	this->from = from;
+	from = string(temp);
+	for(int i = 0; i < from.length(); i++)		//To lower case
+		from[i] = tolower(from[i]);
 
 	fscanf(fp, "%s ", temp);					//Date:	
 	fgets(temp, MAX_STRING_LEN, fp);
 	temp[strcspn(temp, "\n")] = 0;
-	string date;
-	formatDate(temp, date);
-	this->date = date;
+	formatDate(temp, &date);
 
 	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID:
 
 	fscanf(fp, "%s ", temp);					//Subject:	
 	fgets(temp, MAX_STRING_LEN, fp);
 	temp[strcspn(temp, "\n")] = 0;
-	string subject(temp);
-	this->subject = temp;
+	subject = string(temp);
 
 	fscanf(fp, "%s ", temp);					//To:	
 	fgets(temp, MAX_STRING_LEN, fp);
 	temp[strcspn(temp, "\n")] = 0;
-	string to(temp);
-	this->to = to;
+	to = string(temp);
+	for(int i = 0; i < to.length(); i++)		//To lower case
+		to[i] = tolower(to[i]);
 
 	string content;
 	fscanf(fp, "%s ", temp);					//Content:	
@@ -133,8 +135,6 @@ Email::Email(char* file_path){
 	int subject_len;							//Subject need to be searched,too
 	formatContent(subject, contentTrie, &subject_len);
 
-
-
 	fclose(fp);
 }
 
@@ -146,7 +146,7 @@ string& Email::getFrom(){
 	return from;
 }
 
-string& Email::getDate() {
+long long Email::getDate() {
 	return date;
 }
 
@@ -160,10 +160,6 @@ unsigned int Email::getMessage_ID() {
 
 string& Email::getSubject() {
 	return subject;
-}
-
-int Email::getLength(){
-	return length;
 }
 
 TrieNode* Email::getContent(){

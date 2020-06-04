@@ -10,7 +10,7 @@ public:
 	Email(char* file_path);
 	~Email();
 	string& getFrom();
-	string& getDate();
+	long long getDate();
 	unsigned int getMessage_ID();
 	string& getSubject();
 	string& getTo();
@@ -19,7 +19,7 @@ public:
 private:
 	string from;
 	string to;
-	string date;
+	long long date;
 	unsigned int message_id;
 	string subject;
 	int length;
