@@ -42,8 +42,8 @@ int main()
 	string input;
 
 	map<unsigned int, Email*> ID_Map;
-	map<string, vector<Email*>> From_Map;
-	map<string, vector<Email*>> To_Map;
+	map<string, vector<Email*> > From_Map;
+	map<string, vector<Email*> > To_Map;
 	list<Email*> Date_list;
 
 	int mail_count = 0;
@@ -64,7 +64,6 @@ int main()
 					vector<Email*> From_vector;
 					From_vector.push_back(temp);
 					From_Map[temp->getFrom()] = From_vector;
-					//From_Map.insert(pair<string, vector<Email>>(temp.getFrom(), From_vector));
 				}
 				else 
 				{
@@ -75,7 +74,7 @@ int main()
 				{
 					vector<Email*> To_vector;
 					To_vector.push_back(temp);
-					From_Map.insert(pair<string, vector<Email*>>(temp->getTo(), To_vector));
+					From_Map.insert(pair<string, vector<Email*> >(temp->getTo(), To_vector));
 				}
 				else
 				{
@@ -324,7 +323,7 @@ int main()
 				string expression(query);
 				Parser parser(expression);
 
-				priority_queue<int, vector<int>, greater<int>> answer_ID;
+				priority_queue<int, vector<int>, greater<int> > answer_ID;
 
 				if (From_To_Date_flag == 1)
 				{
