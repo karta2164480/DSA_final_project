@@ -108,8 +108,7 @@ Email::Email(char* file_path){
 	temp[strcspn(temp, "\n")] = 0;
 	formatDate(temp, &date);
 
-	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID:
-
+	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID: 
 	fscanf(fp, "%s ", temp);					//Subject:	
 	fgets(temp, MAX_STRING_LEN, fp);
 	temp[strcspn(temp, "\n")] = 0;
@@ -165,8 +164,11 @@ string& Email::getSubject() {
 TrieNode* Email::getContent(){
 	return contentTrie;
 }
+<<<<<<< HEAD
 
 int Email::getLength() 
 {
 	return length;
 }
+=======
+>>>>>>> 647fa806e28bc33023229662c70b1d61aad2b1ba

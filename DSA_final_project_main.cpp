@@ -355,8 +355,16 @@ int main()
 				{
 					while (!answer_ID.empty())
 					{
-						cout << answer_ID.top() << " ";
+						int answer = answer_ID.top();
 						answer_ID.pop();
+						if (!answer_ID.empty()) 
+						{
+							cout << answer << " ";
+						}
+						else 
+						{
+							cout << answer;
+						}
 					}
 					cout << "\n";
 				}
