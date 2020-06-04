@@ -1,7 +1,7 @@
 #include "email.h"
 #include <stdio.h>	//FILE
-#include <string.h>	//strcspn, sscanf, strcat
-#include <stdlib.h>	//strtoll
+#include <string.h>	//strcspn, strcpy
+#include <stdlib.h>	//strtoll, strtoul
 #include <ctype.h>	//isalpha, isdigit, tolower
 
 #define MAX_STRING_LEN 1000
@@ -13,12 +13,13 @@ void formatDate(char* raw, long long* date){
 	char min[3];
 	char month[20];
 	sscanf(raw, " %s %s %s at %s", day, month, year, time);
-	//printf("day:%s, month:%s, year:%s, time:%s\n", day, month, year, time);
+	
 	if(strlen(day) == 1){
 		day[2] = '\0';
 		day[1] = day[0];
 		day[0] = '0';
 	}
+	
 	switch(month[0]){
 		case 'J':
 			if(month[1] == 'a'){
@@ -45,8 +46,7 @@ void formatDate(char* raw, long long* date){
 			}else{
 				month[0] = '0'; month[1] = '8'; month[2] = '\0';
 			}
-			break;
-		case 'S':
+			break; case 'S':
 			month[0] = '0'; month[1] = '9'; month[2] = '\0';
 			break;
 		case 'O':
@@ -94,45 +94,51 @@ Email::Email(char* file_path){
 
 	FILE* fp = fopen(file_path, "r");
 
+	char raw[MAX_STRING_LEN];
+	char trash[MAX_STRING_LEN];
 	char temp[MAX_STRING_LEN];
 
-	fscanf(fp, "%s ", temp);					//From:
-	fgets(temp, MAX_STRING_LEN, fp);
-	temp[strcspn(temp, "\n")] = 0;
+	fgets(raw, MAX_STRING_LEN, fp);					//From:
+	raw[strcspn(raw, "\n")] = 0;
+	strcpy(temp, raw + sizeof(char) * 6);
 	from = string(temp);
-	for(int i = 0; i < from.length(); i++)		//To lower case
+	for(int i = 0; i < from.length(); i++)				//To lower case
 		from[i] = tolower(from[i]);
 
-	fscanf(fp, "%s ", temp);					//Date:	
-	fgets(temp, MAX_STRING_LEN, fp);
-	temp[strcspn(temp, "\n")] = 0;
+	fgets(raw, MAX_STRING_LEN, fp);					//Date:
+	raw[strcspn(raw, "\n")] = 0;
+	strcpy(temp, raw + sizeof(char) * 6);
 	formatDate(temp, &date);
 
-	fscanf(fp, "%s %u\n", temp, &message_id);			//Message-ID:
+	fgets(raw, MAX_STRING_LEN, fp);					//Message-ID:
+	raw[strcspn(raw, "\n")] = 0;
+	strcpy(temp, raw + sizeof(char) * 12);
+	char *eptr;
+	message_id = strtoul(temp, &eptr, 10);
 
-	fscanf(fp, "%s ", temp);					//Subject:	
-	fgets(temp, MAX_STRING_LEN, fp);
-	temp[strcspn(temp, "\n")] = 0;
-	subject = string(temp);
+	fgets(raw, MAX_STRING_LEN, fp);					//Subject:
+	raw[strcspn(raw, "\n")] = 0;
+	char temp_subject[MAX_STRING_LEN] = {'\0'};			//For empty subject
+	strcpy(temp_subject, raw + sizeof(char) * 9);
+	subject = string(temp_subject);
 
-	fscanf(fp, "%s ", temp);					//To:	
-	fgets(temp, MAX_STRING_LEN, fp);
-	temp[strcspn(temp, "\n")] = 0;
+	fgets(raw, MAX_STRING_LEN, fp);					//Date:
+	raw[strcspn(raw, "\n")] = 0;
+	strcpy(temp, raw + sizeof(char) * 4);
 	to = string(temp);
-	for(int i = 0; i < to.length(); i++)		//To lower case
+	for(int i = 0; i < to.length(); i++)				//To lower case
 		to[i] = tolower(to[i]);
 
 	string content;
 	fscanf(fp, "%s ", temp);					//Content:	
 	while(fgets(temp, MAX_STRING_LEN, fp))
-		content += temp;
-
+		content += string(temp);
 
 	contentTrie = getNode();					//Construct trie
 	length = 0;
 	formatContent(content, contentTrie, &length);
 
-	int subject_len;							//Subject need to be searched,too
+	int subject_len;						//Subject need to be searched
 	formatContent(subject, contentTrie, &subject_len);
 
 	fclose(fp);
