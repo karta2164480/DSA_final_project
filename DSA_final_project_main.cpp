@@ -257,16 +257,12 @@ int main()
 						temp2[j] = query[i];
 					}
 
-					string Date_query1(temp1);
-					string Date_query2(temp2);
+					long long int Date_query1 = atoll(temp1);
+					long long int Date_query2 = atoll(temp2);
 
-					if (Date_query1.size() == 0) 
+					if (Date_query2 == 0) 
 					{
-						Date_query1 = "0";
-					}
-					if (Date_query2.size() == 0) 
-					{
-						Date_query2 = "x";
+						Date_query2 = LLONG_MAX;
 					}
 
 					if (answer_candidate.empty())
