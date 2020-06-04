@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <queue>
+#include <stdio.h>
 #include <string>
 #include "parser.h"
 
@@ -181,7 +182,7 @@ int main()
 					char temp[MAX_QUREY_LEN] = { 0 };
 					for (int i = 3, j = 0; query[i] != '\"'; i++, j++)
 					{
-						temp[j] = query[i];
+						temp[j] = tolower(query[i]);
 					}
 					string From_query(temp);
 					if (answer_candidate.empty()) 
@@ -214,7 +215,7 @@ int main()
 					char temp[MAX_QUREY_LEN] = { 0 };
 					for (int i = 3, j = 0; query[i] != '\"'; i++, j++) 
 					{
-						temp[j] = query[i];
+						temp[j] = tolower(query[i]);
 					}
 					string To_query(temp);
 					if (answer_candidate.empty())
