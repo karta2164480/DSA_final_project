@@ -10,7 +10,6 @@ void formatDate(char* raw, long long* date){
 	char day[3];
 	char year[50];
 	char time[6];
-	char min[3];
 	char month[20];
 	sscanf(raw, " %s %s %s at %s", day, month, year, time);
 	
@@ -95,7 +94,6 @@ Email::Email(char* file_path){
 	FILE* fp = fopen(file_path, "r");
 
 	char raw[MAX_STRING_LEN];
-	char trash[MAX_STRING_LEN];
 	char temp[MAX_STRING_LEN];
 
 	fgets(raw, MAX_STRING_LEN, fp);					//From:

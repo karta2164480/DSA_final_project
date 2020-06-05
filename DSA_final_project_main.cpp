@@ -1,8 +1,10 @@
+#include <climits>
 #include <iostream>
 #include <list>
 #include <map>
 #include <vector>
 #include <queue>
+#include <stdio.h>
 #include <string>
 #include "parser.h"
 
@@ -41,8 +43,8 @@ int main()
 	string input;
 
 	map<unsigned int, Email*> ID_Map;
-	map<string, vector<Email*>> From_Map;
-	map<string, vector<Email*>> To_Map;
+	map<string, vector<Email*> > From_Map;
+	map<string, vector<Email*> > To_Map;
 	list<Email*> Date_list;
 
 	int mail_count = 0;
@@ -63,7 +65,6 @@ int main()
 					vector<Email*> From_vector;
 					From_vector.push_back(temp);
 					From_Map[temp->getFrom()] = From_vector;
-					//From_Map.insert(pair<string, vector<Email>>(temp.getFrom(), From_vector));
 				}
 				else 
 				{
@@ -74,7 +75,7 @@ int main()
 				{
 					vector<Email*> To_vector;
 					To_vector.push_back(temp);
-					From_Map.insert(pair<string, vector<Email*>>(temp->getTo(), To_vector));
+					From_Map.insert(pair<string, vector<Email*> >(temp->getTo(), To_vector));
 				}
 				else
 				{
@@ -181,7 +182,7 @@ int main()
 					char temp[MAX_QUREY_LEN] = { 0 };
 					for (int i = 3, j = 0; query[i] != '\"'; i++, j++)
 					{
-						temp[j] = query[i];
+						temp[j] = tolower(query[i]);
 					}
 					string From_query(temp);
 					if (answer_candidate.empty()) 
@@ -214,7 +215,7 @@ int main()
 					char temp[MAX_QUREY_LEN] = { 0 };
 					for (int i = 3, j = 0; query[i] != '\"'; i++, j++) 
 					{
-						temp[j] = query[i];
+						temp[j] = tolower(query[i]);
 					}
 					string To_query(temp);
 					if (answer_candidate.empty())
@@ -257,16 +258,12 @@ int main()
 						temp2[j] = query[i];
 					}
 
-					string Date_query1(temp1);
-					string Date_query2(temp2);
+					long long int Date_query1 = atoll(temp1);
+					long long int Date_query2 = atoll(temp2);
 
-					if (Date_query1.size() == 0) 
+					if (Date_query2 == 0) 
 					{
-						Date_query1 = "0";
-					}
-					if (Date_query2.size() == 0) 
-					{
-						Date_query2 = "x";
+						Date_query2 = LLONG_MAX;
 					}
 
 					if (answer_candidate.empty())
@@ -323,7 +320,7 @@ int main()
 				string expression(query);
 				Parser parser(expression);
 
-				priority_queue<int, vector<int>, greater<int>> answer_ID;
+				priority_queue<int, vector<int>, greater<int> > answer_ID;
 
 				if (From_To_Date_flag == 1)
 				{
