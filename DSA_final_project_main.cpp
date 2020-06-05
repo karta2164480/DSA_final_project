@@ -79,7 +79,7 @@ int main()
 				{
 					vector<Email*> To_vector;
 					To_vector.push_back(temp);
-					From_Map.insert(pair<string, vector<Email*> >(temp->getTo(), To_vector));
+					To_Map.insert(pair<string, vector<Email*> >(temp->getTo(), To_vector));
 				}
 				else
 				{
