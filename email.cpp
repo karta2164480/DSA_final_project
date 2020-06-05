@@ -74,6 +74,7 @@ void formatDate(char* raw, long long* date){
 void formatContent(string& content, TrieNode *root, int *length){
 
 	string temp;
+	temp.clear();
 	for(int i = 0; i < content.size(); i++){
 		if(isalpha(content[i])){
 			temp.push_back(tolower(content[i]));

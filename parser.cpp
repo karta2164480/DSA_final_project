@@ -77,7 +77,7 @@ Parser::Parser(string& expr){
 			Token temp;
 			temp.isWord = true;
 
-			while((isdigit(expr[i]) || isalpha(expr[i])) && i < expr.length()){
+			while(i < expr.length() && (isdigit(expr[i]) || isalpha(expr[i]))){
 				temp.str.push_back(expr[i]);
 				i++;
 			}
