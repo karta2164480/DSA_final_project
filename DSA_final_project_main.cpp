@@ -10,7 +10,6 @@
 
 using namespace std;
 
-#define MAX_FILE_PATH_LEN 1000
 #define MAX_QUREY_LEN 1000
 
 bool compare_date(Email* email1, Email* email2) 
@@ -53,10 +52,14 @@ int main()
 	{
 		if (input.compare("add") == 0)
 		{
-			char path[MAX_FILE_PATH_LEN];
-			scanf("%s", path);
+			string path;
+			cin >> path;
 			Email *temp;
-			temp = new Email(path);
+
+			char* path_char_array = new char[path.length() + 1];
+			strcpy(path_char_array, path.c_str());
+
+			temp = new Email(path_char_array);
 
 			if (ID_Map.count(temp->getMessage_ID()) == 0) 
 			{
@@ -320,7 +323,7 @@ int main()
 				string expression(query);
 				Parser parser(expression);
 
-				priority_queue<int, vector<int>, greater<int> > answer_ID;
+				priority_queue<unsigned int, vector<unsigned int>, greater<unsigned int> > answer_ID;
 
 				if (From_To_Date_flag == 1)
 				{
@@ -352,7 +355,7 @@ int main()
 				{
 					while (!answer_ID.empty())
 					{
-						int answer = answer_ID.top();
+						unsigned int answer = answer_ID.top();
 						answer_ID.pop();
 						if (!answer_ID.empty()) 
 						{
