@@ -144,7 +144,8 @@ int main()
 				{
 					if ((*it)->getMessage_ID() == id) 
 					{
-						From_Map[wait_to_remove->getFrom()].erase(it);
+						(*it) = From_Map[wait_to_remove->getFrom()].back();
+						From_Map[wait_to_remove->getFrom()].pop_back();
 						break;
 					}
 				}
@@ -153,7 +154,8 @@ int main()
 				{
 					if ((*it)->getMessage_ID() == id)
 					{
-						To_Map[wait_to_remove->getTo()].erase(it);
+						(*it) = To_Map[wait_to_remove->getTo()].back();
+						To_Map[wait_to_remove->getTo()].pop_back();
 						break;
 					}
 				}
@@ -230,9 +232,10 @@ int main()
 						{
 							if ((*it)->getFrom() != From_query)
 							{
-								it = answer_candidate.erase(it);
+								(*it) = answer_candidate.back();
+								answer_candidate.pop_back();
 							}
-							else
+							else 
 							{
 								it++;
 							}
@@ -263,7 +266,8 @@ int main()
 						{
 							if ((*it)->getTo() != To_query) 
 							{
-								it = answer_candidate.erase(it);
+								(*it) = answer_candidate.back();
+								answer_candidate.pop_back();
 							}
 							else
 							{
@@ -319,7 +323,8 @@ int main()
 						{
 							if ((*it)->getDate() < Date_query1 || (*it)->getDate() > Date_query2)
 							{
-								it = answer_candidate.erase(it);
+								(*it) = answer_candidate.back();
+								answer_candidate.pop_back();
 							}
 							else
 							{
