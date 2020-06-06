@@ -13,6 +13,31 @@ using namespace std;
 
 #define MAX_QUREY_LEN 1000
 
+struct compare_longest
+{
+	bool operator()(Email* email1, Email* email2)
+	{
+		if (email1->getLength() > email2->getLength())
+		{
+			return 0;
+		}
+		if (email1->getLength() < email2->getLength())
+		{
+			return 1;
+		}
+		if (email1->getMessage_ID() > email2->getMessage_ID())
+		{
+			return 1;
+		}
+		if (email1->getMessage_ID() < email2->getMessage_ID())
+		{
+			return 0;
+		}
+		return 0;
+	}
+};
+
+
 bool compare_date(Email* email1, Email* email2) 
 {
 	if (email1->getDate() < email2->getDate())
@@ -37,6 +62,7 @@ bool compare_date(Email* email1, Email* email2)
 	}
 }
 
+
 int main()
 {
 
@@ -46,6 +72,7 @@ int main()
 	map<string, vector<Email*> > From_Map;
 	map<string, vector<Email*> > To_Map;
 	list<Email*> Date_list;
+	priority_queue<Email*, vector<Email*>, compare_longest > longest_queue;
 
 	int mail_count = 0;
 
@@ -85,8 +112,11 @@ int main()
 				{
 					To_Map[temp->getTo()].push_back(temp);
 				}
+
+				longest_queue.push(temp);
 				
 				Date_list.push_back(temp);
+
 				ID_Map.insert(pair<unsigned int, Email*>(temp->getMessage_ID(), temp));
 
 				mail_count++;
@@ -138,33 +168,33 @@ int main()
 				}
 
 				ID_Map.erase(id);
-				delete wait_to_remove;
 				mail_count--;
 				cout << mail_count << "\n";
 			}
 		}
 		else if (input.compare("longest") == 0)
 		{
-			int max_length = 0;
-			int max_id = -1;
-			for (map<unsigned int, Email*>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
-			{
-				int now_length = ((*(it->second)).getLength());
-				if (now_length > max_length)
-				{
-					max_length = now_length;
-					max_id = (*(it->second)).getMessage_ID();
-				}
-			}
-			if (max_id == -1)
+			if (longest_queue.empty()) 
 			{
 				cout << "-" << "\n";
 			}
-			else
+			else 
 			{
-				cout << max_id << " " << max_length << "\n";
+				while ((!longest_queue.empty()) && ID_Map.count((longest_queue.top()->getMessage_ID())) == 0) 
+				{
+					Email* wait_to_remove = longest_queue.top();
+					longest_queue.pop();
+					delete wait_to_remove;
+				}
+				if (longest_queue.empty()) 
+				{
+					cout << "-" << "\n";
+				}
+				else 
+				{
+					cout << longest_queue.top()->getMessage_ID() << " " << longest_queue.top()->getLength() << "\n";
+				}
 			}
-			//wait for better data structure improvement
 		}
 		else if (input.compare("query") == 0)
 		{
