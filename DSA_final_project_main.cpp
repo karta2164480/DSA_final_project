@@ -96,6 +96,7 @@ int main()
 			{
 				cout << "-" << "\n";
 			}
+			delete path_char_array;
 		}
 		else if (input.compare("remove") == 0)
 		{
