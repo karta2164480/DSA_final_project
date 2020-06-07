@@ -1,7 +1,7 @@
 #include "string.h"		//strtok
 #include <map>			//map
 #include <vector>		//vector
-#include <algorithm>	//sort
+#include <algorithm>		//sort
 #include "email.h"		//email 
 #include "parser.h"		//parser
 
@@ -14,7 +14,7 @@ int main(){
 	char file_path[MAX_STRING_LENGTH];
 	char query_filter[MAX_STRING_LENGTH];
 
-	/*	main data structure */
+	/*	main data structure 	*/
 	map< unsigned int, Email* >	id_map;
 	map< string, map< string, multimap< long long, Email* > > > from_to_date_map;
 	map< string, multimap< long long, Email* > > to_date_map;
