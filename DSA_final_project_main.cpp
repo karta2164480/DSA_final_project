@@ -89,35 +89,41 @@ int main()
 
 			temp = new Email(path_char_array);
 
-			if (ID_Map.count(temp->getMessage_ID()) == 0) 
+			unsigned id = temp->getMessage_ID();
+
+			if (ID_Map.count(id) == 0)
 			{
-				if (From_Map.count(temp->getFrom()) == 0)
+				string from = temp->getFrom();
+				
+				if (From_Map.count(from) == 0)
 				{
 					vector<Email*> From_vector;
 					From_vector.push_back(temp);
-					From_Map[temp->getFrom()] = From_vector;
+					From_Map[from] = From_vector;
 				}
 				else 
 				{
-					From_Map[temp->getFrom()].push_back(temp);
+					From_Map[from].push_back(temp);
 				}
 
-				if (To_Map.count(temp->getTo()) == 0)
+				string to = temp->getTo();
+
+				if (To_Map.count(to) == 0)
 				{
 					vector<Email*> To_vector;
 					To_vector.push_back(temp);
-					To_Map.insert(pair<string, vector<Email*> >(temp->getTo(), To_vector));
+					To_Map.insert(pair<string, vector<Email*> >(to, To_vector));
 				}
 				else
 				{
-					To_Map[temp->getTo()].push_back(temp);
+					To_Map[to].push_back(temp);
 				}
 
 				longest_queue.push(temp);
 				
 				Date_list.push_back(temp);
 
-				ID_Map.insert(pair<unsigned int, Email*>(temp->getMessage_ID(), temp));
+				ID_Map.insert(pair<unsigned int, Email*>(id, temp));
 
 				mail_count++;
 				cout << mail_count << "\n";
@@ -129,7 +135,7 @@ int main()
 		}
 		else if (input.compare("remove") == 0)
 		{
-			int id;
+			unsigned int id;
 			cin >> id;
 
 			if (ID_Map.find(id) == ID_Map.end())
@@ -139,23 +145,26 @@ int main()
 			else
 			{
 				Email* wait_to_remove = ID_Map[id];
-				
-				for (vector<Email*>::iterator it = From_Map[wait_to_remove->getFrom()].begin(); it != From_Map[wait_to_remove->getFrom()].end(); it++)
+				string from = wait_to_remove->getFrom();
+
+				for (vector<Email*>::iterator it = From_Map[from].begin(); it != From_Map[from].end(); it++)
 				{
 					if ((*it)->getMessage_ID() == id) 
 					{
-						(*it) = From_Map[wait_to_remove->getFrom()].back();
-						From_Map[wait_to_remove->getFrom()].pop_back();
+						(*it) = From_Map[from].back();
+						From_Map[from].pop_back();
 						break;
 					}
 				}
 
-				for (vector<Email*>::iterator it = To_Map[wait_to_remove->getTo()].begin(); it != To_Map[wait_to_remove->getTo()].end(); it++)
+				string to = wait_to_remove->getTo();
+
+				for (vector<Email*>::iterator it = To_Map[to].begin(); it != To_Map[to].end(); it++)
 				{
 					if ((*it)->getMessage_ID() == id)
 					{
-						(*it) = To_Map[wait_to_remove->getTo()].back();
-						To_Map[wait_to_remove->getTo()].pop_back();
+						(*it) = To_Map[to].back();
+						To_Map[to].pop_back();
 						break;
 					}
 				}
