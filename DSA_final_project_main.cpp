@@ -1,4 +1,5 @@
 #include <climits>
+#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <list>
@@ -12,6 +13,75 @@
 using namespace std;
 
 #define MAX_QUREY_LEN 1000
+#define HASH_TABLE_SIZE 10000
+
+class from_hashtable 
+{
+public:
+	vector<vector<Email*>> data;
+
+	from_hashtable()
+	{
+		data.resize(HASH_TABLE_SIZE);
+	}
+
+	void push(Email* input) 
+	{
+		int sum = 0;
+		for (int i = 0; i < input->getFrom().size(); i++) 
+		{
+			sum += input->getFrom()[i] * pow(8, i % 8); // I don't know.
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		data[sum].push_back(input);
+
+	}
+
+	vector<Email*> find(string query) 
+	{
+		vector<Email*> answer;
+		
+		int sum = 0;
+		for (int i = 0; i < query.size(); i++)
+		{
+			sum += query[i] * pow(8, i % 8);
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		for (int i = 0; i < data[sum].size(); i++) 
+		{
+			if (data[sum][i]->getFrom() == query) 
+			{
+				answer.push_back(data[sum][i]);
+			}
+		}
+
+		return answer;
+
+	}
+	
+	void pop(string query, unsigned int id) 
+	{
+		int sum = 0;
+		for (int i = 0; i < query.size(); i++)
+		{
+			sum += query[i] * pow(8, i % 8);
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		for (int i = 0; i < data[sum].size(); i++)
+		{
+			if (data[sum][i]->getMessage_ID() == id) 
+			{
+				data[sum][i] = data[sum][data[sum].size() - 1];
+				data[sum].pop_back();
+			}
+		}
+
+	}
+
+};
 
 struct compare_longest
 {
@@ -69,7 +139,7 @@ int main()
 	string input;
 
 	map<unsigned int, Email*> ID_Map;
-	map<string, vector<Email*> > From_Map;
+	from_hashtable From_Hashtable;
 	map<string, vector<Email*> > To_Map;
 	list<Email*> Date_list;
 	priority_queue<Email*, vector<Email*>, compare_longest > longest_queue;
@@ -95,16 +165,7 @@ int main()
 			{
 				string from = temp->getFrom();
 				
-				if (From_Map.count(from) == 0)
-				{
-					vector<Email*> From_vector;
-					From_vector.push_back(temp);
-					From_Map[from] = From_vector;
-				}
-				else 
-				{
-					From_Map[from].push_back(temp);
-				}
+				From_Hashtable.push(temp);
 
 				string to = temp->getTo();
 
@@ -148,15 +209,7 @@ int main()
 				Email* wait_to_remove = ID_Map[id];
 				string from = wait_to_remove->getFrom();
 
-				for (vector<Email*>::iterator it = From_Map[from].begin(); it != From_Map[from].end(); it++)
-				{
-					if ((*it)->getMessage_ID() == id) 
-					{
-						(*it) = From_Map[from].back();
-						From_Map[from].pop_back();
-						break;
-					}
-				}
+				From_Hashtable.pop(from, id);
 
 				string to = wait_to_remove->getTo();
 
@@ -233,7 +286,7 @@ int main()
 					string From_query(temp);
 					if (answer_candidate.empty()) 
 					{
-						answer_candidate = (From_Map[From_query]);
+						answer_candidate = (From_Hashtable.find(From_query));
 					}
 					else 
 					{
