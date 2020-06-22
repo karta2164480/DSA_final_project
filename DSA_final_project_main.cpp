@@ -238,17 +238,11 @@ int main()
 			if (ID_Map.count(id) == 0)
 			{
 				Email* temp = Fake_ID_Map[id];
-
-				string from = temp->getFrom();				
+			
 				From_Hashtable.push(temp);
-
-				string to = temp->getTo();
 				To_Hashtable.push(temp);
-
 				longest_queue.push(temp);
-				
 				Date_list.push_back(temp);
-
 				ID_Map.insert(pair<unsigned int, Email*>(id, temp));
 
 				mail_count++;
@@ -272,12 +266,8 @@ int main()
 			{
 				Email* wait_to_remove = ID_Map[id];
 
-				string from = wait_to_remove->getFrom();
-				From_Hashtable.pop(from, id);
-
-				string to = wait_to_remove->getTo();
-				To_Hashtable.pop(to, id);
-
+				From_Hashtable.pop(wait_to_remove->getFrom(), id);
+				To_Hashtable.pop(wait_to_remove->getTo(), id);
 				for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
 				{
 					if ((*it)->getMessage_ID() == id)
@@ -286,8 +276,8 @@ int main()
 						break;
 					}
 				}
-
 				ID_Map.erase(id);
+				
 				mail_count--;
 				cout << mail_count << "\n";
 			}
