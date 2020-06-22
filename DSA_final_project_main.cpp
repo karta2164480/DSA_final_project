@@ -35,7 +35,6 @@ public:
 		sum %= HASH_TABLE_SIZE;
 
 		data[sum].push_back(input);
-
 	}
 
 	vector<Email*> find(string query) 
@@ -56,9 +55,7 @@ public:
 				answer.push_back(data[sum][i]);
 			}
 		}
-
 		return answer;
-
 	}
 	
 	void pop(string query, unsigned int id) 
@@ -78,10 +75,73 @@ public:
 				data[sum].pop_back();
 			}
 		}
+	}
+};
 
+class to_hashtable
+{
+public:
+	vector<vector<Email*>> data;
+
+	to_hashtable()
+	{
+		data.resize(HASH_TABLE_SIZE);
 	}
 
+	void push(Email* input)
+	{
+		int sum = 0;
+		for (int i = 0; i < input->getTo().size(); i++)
+		{
+			sum += input->getTo()[i] * pow(8, i % 8); // I don't know.
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		data[sum].push_back(input);
+	}
+
+	vector<Email*> find(string query)
+	{
+		vector<Email*> answer;
+
+		int sum = 0;
+		for (int i = 0; i < query.size(); i++)
+		{
+			sum += query[i] * pow(8, i % 8);
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		for (int i = 0; i < data[sum].size(); i++)
+		{
+			if (data[sum][i]->getTo() == query)
+			{
+				answer.push_back(data[sum][i]);
+			}
+		}
+		return answer;
+	}
+
+	void pop(string query, unsigned int id)
+	{
+		int sum = 0;
+		for (int i = 0; i < query.size(); i++)
+		{
+			sum += query[i] * pow(8, i % 8);
+		}
+		sum %= HASH_TABLE_SIZE;
+
+		for (int i = 0; i < data[sum].size(); i++)
+		{
+			if (data[sum][i]->getMessage_ID() == id)
+			{
+				data[sum][i] = data[sum][data[sum].size() - 1];
+				data[sum].pop_back();
+			}
+		}
+	}
 };
+
+
 
 struct compare_longest
 {
@@ -140,7 +200,7 @@ int main()
 
 	map<unsigned int, Email*> ID_Map;
 	from_hashtable From_Hashtable;
-	map<string, vector<Email*> > To_Map;
+	to_hashtable To_Hashtable;
 	list<Email*> Date_list;
 	priority_queue<Email*, vector<Email*>, compare_longest > longest_queue;
 
@@ -163,22 +223,11 @@ int main()
 
 			if (ID_Map.count(id) == 0)
 			{
-				string from = temp->getFrom();
-				
+				string from = temp->getFrom();				
 				From_Hashtable.push(temp);
 
 				string to = temp->getTo();
-
-				if (To_Map.count(to) == 0)
-				{
-					vector<Email*> To_vector;
-					To_vector.push_back(temp);
-					To_Map.insert(pair<string, vector<Email*> >(to, To_vector));
-				}
-				else
-				{
-					To_Map[to].push_back(temp);
-				}
+				To_Hashtable.push(temp);
 
 				longest_queue.push(temp);
 				
@@ -207,21 +256,12 @@ int main()
 			else
 			{
 				Email* wait_to_remove = ID_Map[id];
-				string from = wait_to_remove->getFrom();
 
+				string from = wait_to_remove->getFrom();
 				From_Hashtable.pop(from, id);
 
 				string to = wait_to_remove->getTo();
-
-				for (vector<Email*>::iterator it = To_Map[to].begin(); it != To_Map[to].end(); it++)
-				{
-					if ((*it)->getMessage_ID() == id)
-					{
-						(*it) = To_Map[to].back();
-						To_Map[to].pop_back();
-						break;
-					}
-				}
+				To_Hashtable.pop(to, id);
 
 				for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
 				{
@@ -320,7 +360,7 @@ int main()
 					string To_query(temp);
 					if (answer_candidate.empty())
 					{
-						answer_candidate = (To_Map[To_query]);
+						answer_candidate = (To_Hashtable.find(To_query));
 					}
 					else
 					{
