@@ -198,7 +198,9 @@ int main()
 
 	string input;
 
+	map<string, unsigned int> path_map;
 	map<unsigned int, Email*> ID_Map;
+	map<unsigned int, Email*> Fake_ID_Map;
 	from_hashtable From_Hashtable;
 	to_hashtable To_Hashtable;
 	list<Email*> Date_list;
@@ -212,17 +214,31 @@ int main()
 		{
 			string path;
 			cin >> path;
-			Email *temp;
+			unsigned int id;
+			if (path_map.count(path) == 0) 
+			{
+				Email* temp;
 
-			char* path_char_array = new char[path.length() + 1];
-			strcpy(path_char_array, path.c_str());
+				char* path_char_array = new char[path.length() + 1];
+				strcpy(path_char_array, path.c_str());
 
-			temp = new Email(path_char_array);
+				temp = new Email(path_char_array);
 
-			unsigned id = temp->getMessage_ID();
+				id = temp->getMessage_ID();
+				Fake_ID_Map[id] = temp;
+				path_map[path] = id;
+				delete path_char_array;
+			}
+			else 
+			{
+				id = path_map[path];
+			}
+			
 
 			if (ID_Map.count(id) == 0)
 			{
+				Email* temp = Fake_ID_Map[id];
+
 				string from = temp->getFrom();				
 				From_Hashtable.push(temp);
 
@@ -242,7 +258,6 @@ int main()
 			{
 				cout << "-" << "\n";
 			}
-			delete path_char_array;
 		}
 		else if (input.compare("remove") == 0)
 		{
@@ -287,9 +302,7 @@ int main()
 			{
 				while ((!longest_queue.empty()) && ID_Map.count((longest_queue.top()->getMessage_ID())) == 0) 
 				{
-					Email* wait_to_remove = longest_queue.top();
 					longest_queue.pop();
-					delete wait_to_remove;
 				}
 				if (longest_queue.empty()) 
 				{
