@@ -203,7 +203,7 @@ int main()
 	map<unsigned int, Email*> Fake_ID_Map;
 	from_hashtable From_Hashtable;
 	to_hashtable To_Hashtable;
-	list<Email*> Date_list;
+	vector<Email*> Date_vector;
 	priority_queue<Email*, vector<Email*>, compare_longest > longest_queue;
 
 	int mail_count = 0;
@@ -242,7 +242,7 @@ int main()
 				From_Hashtable.push(temp);
 				To_Hashtable.push(temp);
 				longest_queue.push(temp);
-				Date_list.push_back(temp);
+				Date_vector.push_back(temp);
 				ID_Map.insert(pair<unsigned int, Email*>(id, temp));
 
 				mail_count++;
@@ -268,11 +268,11 @@ int main()
 
 				From_Hashtable.pop(wait_to_remove->getFrom(), id);
 				To_Hashtable.pop(wait_to_remove->getTo(), id);
-				for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++) 
+				for (vector<Email*>::iterator it = Date_vector.begin(); it != Date_vector.end(); it++) 
 				{
 					if ((*it)->getMessage_ID() == id)
 					{
-						Date_list.erase(it);
+						Date_vector.erase(it);
 						break;
 					}
 				}
@@ -412,7 +412,7 @@ int main()
 
 					if (answer_candidate.empty())
 					{
-						for (list<Email*>::iterator it = Date_list.begin(); it != Date_list.end(); it++)
+						for (vector<Email*>::iterator it = Date_vector.begin(); it != Date_vector.end(); it++)
 						{
 							if ((*it)->getDate() >= Date_query1 && (*it)->getDate() <= Date_query2)
 							{
