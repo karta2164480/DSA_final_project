@@ -14,6 +14,7 @@ public:
 	string& getSubject();
 	string& getTo();
 	int getLength();
+	string& getcontent();
 	TrieNode *getContent();
 private:
 	string from;
@@ -22,5 +23,6 @@ private:
 	unsigned int message_id;
 	string subject;
 	int length;
+	string content;
 	TrieNode *contentTrie;
 };

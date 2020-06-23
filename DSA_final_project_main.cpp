@@ -509,7 +509,7 @@ int main()
 				{
 					for (vector<Email*>::iterator it = answer_candidate.begin(); it != answer_candidate.end(); it++)
 					{
-						if (parser.evaluate((*it)->getContent()))
+						if (parser.evaluate((*it)->getcontent()))
 						{
 							answer_ID.push((*it)->getMessage_ID());
 						}
@@ -521,7 +521,7 @@ int main()
 					{
 						for (int j = 0; j < ID_Hashtable.data[i].size(); j++) 
 						{
-							if (parser.evaluate(ID_Hashtable.data[i][j]->getContent())) 
+							if (parser.evaluate(ID_Hashtable.data[i][j]->getcontent())) 
 							{
 								answer_ID.push(ID_Hashtable.data[i][j]->getMessage_ID());
 							}

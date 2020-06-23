@@ -128,17 +128,36 @@ Email::Email(char* file_path){
 	for(int i = 0; i < to.length(); i++)				//To lower case
 		to[i] = tolower(to[i]);
 
-	string content;
-	fscanf(fp, "%s ", temp);					//Content:	
-	while(fgets(temp, MAX_STRING_LEN, fp))
+	//string content;
+	fscanf(fp, "%s ", temp);	//Content:
+	content.push_back(' ');
+	length = 0;
+	while (fgets(temp, MAX_STRING_LEN, fp)) 
+	{
+		int i = 0;
+		while (temp[i] != 0)
+		{
+			if (isalnum(temp[i])) 
+			{
+				temp[i] = tolower(temp[i]);
+				length++;
+			}
+			else 
+			{
+				temp[i] = ' ';
+			}
+			i++;
+		}
 		content += string(temp);
+	}
+	content.push_back(' ');
 
-	contentTrie = getNode();					//Construct trie
+	/*contentTrie = getNode();					//Construct trie
 	length = 0;
 	formatContent(content, contentTrie, &length);
 
 	int subject_len;						//Subject need to be searched
-	formatContent(subject, contentTrie, &subject_len);
+	formatContent(subject, contentTrie, &subject_len);*/
 
 	fclose(fp);
 }
@@ -165,6 +184,10 @@ unsigned int Email::getMessage_ID() {
 
 string& Email::getSubject() {
 	return subject;
+}
+
+string& Email::getcontent() {
+	return content;
 }
 
 TrieNode* Email::getContent(){

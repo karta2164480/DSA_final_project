@@ -191,7 +191,7 @@ Parser::Parser(string& expr){
 
 }
 
-bool recurEval(Node* root, TrieNode* content){
+bool recurEval(Node* root, string content){
 
 	if(root->value == "&")
 		return (recurEval(root->left, content) && recurEval(root->right, content));
@@ -209,12 +209,18 @@ bool recurEval(Node* root, TrieNode* content){
 		return regex_search(content, m, e);
 		*/
 		
-		return trie_search(content, root->value);
-		
+		if (content.find(" " + root->value + " ") == string::npos) 
+		{
+			return 0;
+		}
+		else 
+		{
+			return 1;
+		}
 	}
 }
 
-bool Parser::evaluate(TrieNode* content){
+bool Parser::evaluate(string content){
 	return recurEval(root, content);
 }
 

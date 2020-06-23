@@ -14,7 +14,7 @@ class Parser{
 public:
 	Parser(string& expression);
 	~Parser();
-	bool evaluate(TrieNode* content);
+	bool evaluate(string content);
 private:
 	Node *root;
 };
