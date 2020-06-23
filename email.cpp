@@ -131,6 +131,11 @@ Email::Email(char* file_path){
 	//string content;
 	fscanf(fp, "%s ", temp);	//Content:
 	content.push_back(' ');
+	for (int i = 0; i < subject.size(); i++) 
+	{
+		content += tolower(subject[i]);
+	}
+	content.push_back(' ');
 	length = 0;
 	while (fgets(temp, MAX_STRING_LEN, fp)) 
 	{
