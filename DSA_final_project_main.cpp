@@ -141,7 +141,46 @@ public:
 	}
 };
 
+class ID_hashtable
+{
+public:
+	vector<vector<Email*>> data;
 
+	ID_hashtable()
+	{
+		data.resize(HASH_TABLE_SIZE);
+	}
+
+	void push(Email* input)
+	{
+		data[input->getMessage_ID() % HASH_TABLE_SIZE].push_back(input);
+	}
+
+	Email* find(unsigned int id)
+	{
+		for (int i = 0; i < data[id % HASH_TABLE_SIZE].size(); i++) 
+		{
+			if (data[id % HASH_TABLE_SIZE][i]->getMessage_ID() == id) 
+			{
+				return data[id % HASH_TABLE_SIZE][i];
+			}
+		}
+		return NULL;
+	}
+
+	void pop(unsigned int id)
+	{
+		for (int i = 0; i < data[id % HASH_TABLE_SIZE].size(); i++)
+		{
+			if (data[id % HASH_TABLE_SIZE][i]->getMessage_ID() == id)
+			{
+				data[id % HASH_TABLE_SIZE][i] = data[id % HASH_TABLE_SIZE][data[id % HASH_TABLE_SIZE].size() - 1];
+				data[id % HASH_TABLE_SIZE].pop_back();
+				return;
+			}
+		}
+	}
+};
 
 struct compare_longest
 {
@@ -199,8 +238,8 @@ int main()
 	string input;
 
 	map<string, unsigned int> path_map;
-	map<unsigned int, Email*> ID_Map;
-	map<unsigned int, Email*> Fake_ID_Map;
+	ID_hashtable ID_Hashtable;
+	ID_hashtable Fake_ID_Hashtable;
 	from_hashtable From_Hashtable;
 	to_hashtable To_Hashtable;
 	vector<Email*> Date_vector;
@@ -225,7 +264,7 @@ int main()
 				temp = new Email(path_char_array);
 
 				id = temp->getMessage_ID();
-				Fake_ID_Map[id] = temp;
+				Fake_ID_Hashtable.push(temp);
 				path_map[path] = id;
 				delete path_char_array;
 			}
@@ -235,15 +274,15 @@ int main()
 			}
 			
 
-			if (ID_Map.count(id) == 0)
+			if (ID_Hashtable.find(id) == NULL) 
 			{
-				Email* temp = Fake_ID_Map[id];
+				Email* temp = Fake_ID_Hashtable.find(id);
 			
 				From_Hashtable.push(temp);
 				To_Hashtable.push(temp);
 				longest_queue.push(temp);
 				Date_vector.push_back(temp);
-				ID_Map.insert(pair<unsigned int, Email*>(id, temp));
+				ID_Hashtable.push(temp);
 
 				mail_count++;
 				cout << mail_count << "\n";
@@ -258,25 +297,26 @@ int main()
 			unsigned int id;
 			cin >> id;
 
-			if (ID_Map.find(id) == ID_Map.end())
+			if (ID_Hashtable.find(id) == NULL) 
 			{
 				cout << "-" << "\n";
 			}
 			else
 			{
-				Email* wait_to_remove = ID_Map[id];
+				Email* wait_to_remove = ID_Hashtable.find(id);
 
 				From_Hashtable.pop(wait_to_remove->getFrom(), id);
 				To_Hashtable.pop(wait_to_remove->getTo(), id);
-				for (vector<Email*>::iterator it = Date_vector.begin(); it != Date_vector.end(); it++) 
+				for (int i = 0; i < Date_vector.size(); i++) 
 				{
-					if ((*it)->getMessage_ID() == id)
+					if (Date_vector[i]->getMessage_ID() == id) 
 					{
-						Date_vector.erase(it);
+						Date_vector[i] = Date_vector[Date_vector.size() - 1];
+						Date_vector.pop_back();
 						break;
 					}
 				}
-				ID_Map.erase(id);
+				ID_Hashtable.pop(id);
 				
 				mail_count--;
 				cout << mail_count << "\n";
@@ -290,7 +330,7 @@ int main()
 			}
 			else 
 			{
-				while ((!longest_queue.empty()) && ID_Map.count((longest_queue.top()->getMessage_ID())) == 0) 
+				while ((!longest_queue.empty()) && ID_Hashtable.find((longest_queue.top()->getMessage_ID())) == NULL) 
 				{
 					longest_queue.pop();
 				}
@@ -477,11 +517,14 @@ int main()
 				}
 				else
 				{
-					for (map<unsigned int, Email*>::iterator it = ID_Map.begin(); it != ID_Map.end(); it++)
+					for (int i = 0; i < ID_Hashtable.data.size(); i++) 
 					{
-						if (parser.evaluate((*(it->second)).getContent()))
+						for (int j = 0; j < ID_Hashtable.data[i].size(); j++) 
 						{
-							answer_ID.push((*(it->second)).getMessage_ID());
+							if (parser.evaluate(ID_Hashtable.data[i][j]->getContent())) 
+							{
+								answer_ID.push(ID_Hashtable.data[i][j]->getMessage_ID());
+							}
 						}
 					}
 				}
