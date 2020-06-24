@@ -13,7 +13,7 @@
 using namespace std;
 
 #define MAX_QUREY_LEN 1000
-#define HASH_TABLE_SIZE 10000
+#define HASH_TABLE_SIZE 10001
 
 class from_hashtable 
 {
@@ -144,41 +144,34 @@ public:
 class ID_hashtable
 {
 public:
-	vector<vector<Email*>> data;
+	vector<Email*> data;
 
 	ID_hashtable()
 	{
 		data.resize(HASH_TABLE_SIZE);
+		for (int i = 0; i < HASH_TABLE_SIZE; i++) 
+		{
+			data[i] = NULL;
+		}
 	}
 
 	void push(Email* input)
 	{
-		data[input->getMessage_ID() % HASH_TABLE_SIZE].push_back(input);
+		data[input->getMessage_ID()] = input;
 	}
 
 	Email* find(unsigned int id)
 	{
-		for (int i = 0; i < data[id % HASH_TABLE_SIZE].size(); i++) 
+		if (id >= HASH_TABLE_SIZE) 
 		{
-			if (data[id % HASH_TABLE_SIZE][i]->getMessage_ID() == id) 
-			{
-				return data[id % HASH_TABLE_SIZE][i];
-			}
+			return NULL;
 		}
-		return NULL;
+		return data[id];
 	}
 
 	void pop(unsigned int id)
 	{
-		for (int i = 0; i < data[id % HASH_TABLE_SIZE].size(); i++)
-		{
-			if (data[id % HASH_TABLE_SIZE][i]->getMessage_ID() == id)
-			{
-				data[id % HASH_TABLE_SIZE][i] = data[id % HASH_TABLE_SIZE][data[id % HASH_TABLE_SIZE].size() - 1];
-				data[id % HASH_TABLE_SIZE].pop_back();
-				return;
-			}
-		}
+		data[id] = NULL;
 	}
 };
 
@@ -519,11 +512,11 @@ int main()
 				{
 					for (int i = 0; i < ID_Hashtable.data.size(); i++) 
 					{
-						for (int j = 0; j < ID_Hashtable.data[i].size(); j++) 
+						if (ID_Hashtable.data[i] != NULL) 
 						{
-							if (parser.evaluate(ID_Hashtable.data[i][j]->getContent())) 
+							if (parser.evaluate(ID_Hashtable.data[i]->getContent()))
 							{
-								answer_ID.push(ID_Hashtable.data[i][j]->getMessage_ID());
+								answer_ID.push(ID_Hashtable.data[i]->getMessage_ID());
 							}
 						}
 					}
